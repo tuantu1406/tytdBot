@@ -593,18 +593,6 @@ deploy.sh                script deploy CŨ — cần cập nhật theo Makefile 
 
 ---
 
-## 16. Miễn trừ trách nhiệm
-
-Project được phát triển và chia sẻ **chỉ với mục đích học tập, nghiên cứu** — về Telegram Bot API, giao thức mạng/Protobuf, kiến trúc bot và tự động hoá. Bạn chỉ nên dùng bot với **tài khoản game hợp pháp của chính mình**.
-
-Bằng việc tải, cài đặt hoặc sử dụng phần mềm này, bạn hiểu và tự chịu trách nhiệm với các điều sau:
-
-- Tự động hoá có thể **vi phạm Điều khoản sử dụng của nhà phát hành game**. Mọi hệ quả — cảnh cáo, khoá tài khoản tạm thời hoặc vĩnh viễn, xoá/về mốc dữ liệu nhân vật — **tác giả không chịu trách nhiệm**.
-- Không chịu trách nhiệm với bất kỳ thiệt hại nào phát sinh khi sử dụng: mất tài khoản, mất vật phẩm/tài sản trong game, rò rỉ thông tin đăng nhập, giờ máy chủ bị chiếm… Phần mềm cung cấp theo dạng **"nguyên trạng" (as is), không bảo hành** dưới mọi hình thức.
-- Nghiêm cấm sử dụng vào mục đích vi phạm pháp luật hoặc gây hại cho người khác (lừa đảo, chiếm đoạt tài khoản không phải của mình, tấn công dịch vụ…).
-- Nếu bạn không đồng ý với các điều trên, **vui lòng không sử dụng phần mềm**.
-
-Việc tiếp tục sử dụng được coi là bạn đã đọc và chấp nhận toàn bộ nội dung mục này.
 
 ---
 
