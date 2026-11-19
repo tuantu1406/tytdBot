@@ -6,6 +6,7 @@ package eventinspector
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -22,6 +23,7 @@ type Frame struct {
 	Direction string    `json:"direction"`
 	URL       string    `json:"url,omitempty"`
 	Payload   string    `json:"payload"`
+	Opcode    string    `json:"opcode,omitempty"`
 	Decoded   any       `json:"decoded,omitempty"`
 	Sensitive bool      `json:"sensitive,omitempty"`
 }
@@ -135,9 +137,19 @@ func DecodeProto(data []byte) (map[string]any, error) {
 }
 
 func AddFrame(t *Timeline, f Frame) {
+	raw := []byte(f.Payload)
+	if decoded, err := base64.StdEncoding.DecodeString(f.Payload); err == nil && len(decoded) >= 18 && decoded[0] == 0x71 && decoded[1] == 0xab {
+		raw = decoded
+		f.Opcode = hex.EncodeToString(decoded[8:10])
+		if d, err := DecodeProto(decoded[18:]); err == nil && len(d) > 0 {
+			f.Decoded = Redact(d)
+		}
+	}
 	f.Payload = string(RedactJSON([]byte(f.Payload)))
-	if d, err := DecodeProto([]byte(f.Payload)); err == nil && len(d) > 0 {
-		f.Decoded = Redact(d)
+	if f.Decoded == nil {
+		if d, err := DecodeProto(raw); err == nil && len(d) > 0 {
+			f.Decoded = Redact(d)
+		}
 	}
 	f.Sensitive = sensitiveText.MatchString(f.Payload)
 	t.Frames = append(t.Frames, f)
