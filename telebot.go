@@ -164,7 +164,8 @@ func (t *TeleBot) Run() {
 	}()
 	t.ydb, err = db.NewDB("./data.dat", getDK())
 	if err != nil {
-		log.Println("load database error")
+		cwd, _ := os.Getwd()
+		log.Printf("load database error: %v (cwd=%s, db=./data.dat)", err, cwd)
 		return
 	}
 
