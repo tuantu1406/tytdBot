@@ -29,7 +29,7 @@ func TestNgocKhoiShopOnlySelectsAuthorisedRows(t *testing.T) {
 	if len(requests) != 3 { // free 1 + ad 1 remaining + jade 1 remaining
 		t.Fatalf("got %d requests, want 3", len(requests))
 	}
-	if requests[1].GetIsUseADTime() != true || requests[2].GetMallId() != 3 {
+	if requests[1].GetIsUseADTime() || requests[2].GetMallId() != 3 {
 		t.Fatalf("request classification is wrong: %#v", requests)
 	}
 }

@@ -88,10 +88,13 @@ func ngocKhoiShopRequests(activityID int32, rows []*gameproto.ActivityMallTempMs
 		remaining := item.Limit - item.Bought
 		for i := int64(0); i < remaining; i++ {
 			requests = append(requests, &gameproto.ReqBuyActivityGoods{
-				ActivityId:  item.ActivityID,
-				MallId:      item.MallID,
-				Count:       1,
-				IsUseADTime: item.Kind == NgocKhoiShopAd,
+				ActivityId: item.ActivityID,
+				MallId:     item.MallID,
+				Count:      1,
+				// Existing successful shop flows and the captured 21005 packet
+				// send false here for every row. The server uses mall param to
+				// enforce the ad gate; setting true makes the request invalid.
+				IsUseADTime: false,
 			})
 		}
 	}
