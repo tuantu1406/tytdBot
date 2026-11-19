@@ -73,6 +73,14 @@ type Player struct {
 	// filled by the login push (21001), upserted by 21036, refreshed hourly
 	// by 21003 pulls via activityRefresh. Fully self-synchronized.
 	ActList activityStore
+	// Ngoc Khoi shop-only state; only verified free/ad/Tiên Ngọc rows enter
+	// the queue. Money rows are rejected by ngocKhoiShopRequests.
+	NgocKhoiMu      sync.Mutex
+	ngocKhoiID      int32
+	ngocKhoiRows    []*proto.ActivityMallTempMsg
+	ngocKhoiBought  map[int32]int64
+	ngocKhoiPending []int32
+	ngocKhoiDetail  time.Time
 	// Inspector is optional and read-only. When set, the websocket reader and
 	// writer record packet metadata for offline analysis; no packet is emitted.
 	Inspector *eventinspector.Analyzer
@@ -782,6 +790,7 @@ func (p *Player) Run() bool {
 	go p.autoUnionTreasure()
 	go p.autoElixirWater()
 	go p.activityRefresh()
+	go p.ngocKhoiPlayerLoop()
 	go p.skyTradeReportLoop()
 	go p.skyTradeAutoLoop()
 	go p.rebornTrialAutoLoop()
@@ -869,6 +878,7 @@ func (p *Player) wsHandler() {
 				// Hourly 21003 pull answers (and any unsolicited detail
 				// sync) refresh the stored entry's window fields.
 				p.ActList.mergeDetail(p.Username, realData)
+				p.ngocKhoiPlayerHandleDetail(realData)
 				// The same answer carries the Sky Trade travel timing.
 				p.stMergeConfig(realData)
 				// And, for type-341 rows, the Big Chess piece-score table.
@@ -922,7 +932,11 @@ func (p *Player) wsHandler() {
 				SERVER_SKY_TRADE_SPEED_UP, SERVER_SKY_TRADE_MOVE, SERVER_SKY_TRADE_BUY, SERVER_SKY_TRADE_MOVE_FINISH:
 				p.stHandleFrame(msgType, realData)
 
-			case SERVER_ACTIVITY_BUY_GOODS, SERVER_ACTIVITY_COND_REWARD, SERVER_ACTIVITY_COND_REWARD_ARR, SERVER_ACTIVITY_RANK_REWARD, SERVER_ACTIVITY_CROSS_RECHARGE, SERVER_ACTIVITY_TOKEN_REWARD:
+			case SERVER_ACTIVITY_BUY_GOODS:
+				p.ngocKhoiPlayerHandleBuy(realData)
+				p.rbtHandleFrame(msgType, realData)
+				p.swHandleFrame(msgType, realData)
+			case SERVER_ACTIVITY_COND_REWARD, SERVER_ACTIVITY_COND_REWARD_ARR, SERVER_ACTIVITY_RANK_REWARD, SERVER_ACTIVITY_CROSS_RECHARGE, SERVER_ACTIVITY_TOKEN_REWARD:
 				// 21005/21004/21045 answers ride the same seat plumbing
 				// (shop + condition-claim sweeps).
 				p.rbtHandleFrame(msgType, realData)
