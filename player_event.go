@@ -9,6 +9,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"tytd_go/internal/eventinspector"
 	"tytd_go/internal/model"
 	"tytd_go/internal/pack"
 	"tytd_go/internal/proto"
@@ -81,6 +82,9 @@ type EventPlayer struct {
 	// filled by the login push (21001), upserted by 21036, refreshed hourly
 	// by 21003 pulls via activityRefresh. Fully self-synchronized.
 	ActList activityStore
+	// Inspector is optional and read-only; it observes packets for offline
+	// diagnostics and never sends a packet on its own.
+	Inspector *eventinspector.Analyzer
 
 	// Luân Hồi Bí Cảnh (RebornTrial 172) — event-account clone of the Player
 	// engine (player_event_reborntrial.go). NO DB opt-in: Run() starts the
@@ -390,6 +394,11 @@ func (p *EventPlayer) doWrite() {
 			log.Println(p.Username, "server disconnected")
 			return
 		case msg := <-p.writeChan:
+			if p.Inspector != nil {
+				if ok, opcode, payload := pack.Unpack(msg); ok {
+					p.Inspector.Observe("sent", opcode, payload)
+				}
+			}
 			p.conn.SetWriteDeadline(time.Now().Add(30 * time.Second))
 			err := p.conn.WriteMessage(2, msg)
 			if err != nil {
@@ -500,6 +509,9 @@ func (p *EventPlayer) eventWsHandler() {
 			isMSG, msgType, realData := pack.Unpack(message)
 			if !isMSG {
 				continue
+			}
+			if p.Inspector != nil {
+				p.Inspector.Observe("received", msgType, realData)
 			}
 
 			switch msgType {

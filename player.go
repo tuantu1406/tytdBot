@@ -11,6 +11,7 @@ import (
 	"sync"
 	"time"
 	"tytd_go/internal/bigchess"
+	"tytd_go/internal/eventinspector"
 	"tytd_go/internal/model"
 	"tytd_go/internal/pack"
 	"tytd_go/internal/proto"
@@ -72,6 +73,9 @@ type Player struct {
 	// filled by the login push (21001), upserted by 21036, refreshed hourly
 	// by 21003 pulls via activityRefresh. Fully self-synchronized.
 	ActList activityStore
+	// Inspector is optional and read-only. When set, the websocket reader and
+	// writer record packet metadata for offline analysis; no packet is emitted.
+	Inspector *eventinspector.Analyzer
 
 	// God Island: the activity ids of the two island variants (Bồng Lai = 68,
 	// peak Thiên Ma = 333) from the server activity push, and the one
@@ -672,6 +676,11 @@ func (p *Player) doWrite() {
 			log.Println(p.Username, "server disconnected")
 			return
 		case msg := <-p.writeChan:
+			if p.Inspector != nil {
+				if ok, opcode, payload := pack.Unpack(msg); ok {
+					p.Inspector.Observe("sent", opcode, payload)
+				}
+			}
 			// A half-open peer makes WriteMessage block until the kernel
 			// gives up (minutes-hours); the deadline turns that into a fast
 			// error so the account unwinds instead of parking here.
@@ -819,6 +828,9 @@ func (p *Player) wsHandler() {
 			if !isMSG {
 				log.Println("not msg")
 				continue
+			}
+			if p.Inspector != nil {
+				p.Inspector.Observe("received", msgType, realData)
 			}
 			if os.Getenv("TYTD_DEBUG_RAWMSG") != "" {
 				log.Printf("[rawmsg] %s len=%d", msgType, len(realData))
