@@ -6,10 +6,14 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"net/http"
+	"strings"
 	"time"
 )
 
 type cdpTarget struct {
+	Type                 string `json:"type"`
+	Title                string `json:"title"`
+	URL                  string `json:"url"`
 	WebSocketDebuggerURL string `json:"webSocketDebuggerUrl"`
 }
 type cdpMessage struct {
@@ -40,10 +44,27 @@ func Observe(ctx context.Context, addr string, t *Timeline) error {
 	if err = json.NewDecoder(resp.Body).Decode(&targets); err != nil {
 		return err
 	}
-	if len(targets) == 0 || targets[0].WebSocketDebuggerURL == "" {
+	var target *cdpTarget
+	for i := range targets {
+		candidate := &targets[i]
+		if candidate.WebSocketDebuggerURL == "" || candidate.URL == "" || strings.Contains(strings.ToLower(candidate.Title), "devtools") {
+			continue
+		}
+		isGame := strings.Contains(candidate.URL, "h5.slfuntap.com") || strings.Contains(candidate.URL, "slfuntap.com") || strings.Contains(candidate.URL, "cdn-xddq-vn.hwrescdn.com")
+		if target == nil && candidate.Type == "page" {
+			target = candidate
+		}
+		if isGame {
+			target = candidate
+			if strings.Contains(candidate.URL, "cdn-xddq-vn.hwrescdn.com") {
+				break
+			}
+		}
+	}
+	if target == nil {
 		return fmt.Errorf("no Edge page target found at %s", addr)
 	}
-	conn, _, err := websocket.DefaultDialer.DialContext(ctx, targets[0].WebSocketDebuggerURL, nil)
+	conn, _, err := websocket.DefaultDialer.DialContext(ctx, target.WebSocketDebuggerURL, nil)
 	if err != nil {
 		return fmt.Errorf("CDP websocket: %w", err)
 	}

@@ -897,7 +897,7 @@ type giEvent struct {
 	// only the activity's own 21003 conditionConfig rows.
 	BallFeedLast  time.Time
 	CondCfgs      []*proto.ActivityConditionConfig
-	CondSweepLast  time.Time
+	CondSweepLast time.Time
 	// Unit HP (curPower/maxPower) from INFO_LOAD fields 12/13 and the
 	// BALL_INFO / USE_BALL responses. Only this can answer "is the unit
 	// actually at full blood": a dead unit can still report a non-empty

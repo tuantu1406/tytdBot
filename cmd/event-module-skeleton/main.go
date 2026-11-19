@@ -14,7 +14,16 @@ func main() {
 	out := flag.String("out", "", "output Go file; stdout when empty")
 	flag.Parse()
 	s, err := eventinspector.GenerateModuleSkeleton(*name, *verified)
-	if err != nil { fmt.Fprintln(os.Stderr, err); os.Exit(2) }
-	if *out == "" { fmt.Print(s); return }
-	if err := os.WriteFile(*out, []byte(s), 0600); err != nil { fmt.Fprintln(os.Stderr, err); os.Exit(1) }
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(2)
+	}
+	if *out == "" {
+		fmt.Print(s)
+		return
+	}
+	if err := os.WriteFile(*out, []byte(s), 0600); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 }
