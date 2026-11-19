@@ -1,4 +1,4 @@
-package main
+package tytd_go
 
 import (
 	"testing"

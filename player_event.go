@@ -82,6 +82,16 @@ type EventPlayer struct {
 	// filled by the login push (21001), upserted by 21036, refreshed hourly
 	// by 21003 pulls via activityRefresh. Fully self-synchronized.
 	ActList activityStore
+
+	// Ngự Khôi Tranh Phong shop-only automation. The engine is deliberately
+	// limited to rows selected by ngocKhoiShopKind; money rows never enter the
+	// pending queue.
+	NgocKhoiMu      sync.Mutex
+	ngocKhoiID      int32
+	ngocKhoiRows    []*proto.ActivityMallTempMsg
+	ngocKhoiBought  map[int32]int64
+	ngocKhoiPending []int32
+	ngocKhoiDetail  time.Time
 	// Inspector is optional and read-only; it observes packets for offline
 	// diagnostics and never sends a packet on its own.
 	Inspector *eventinspector.Analyzer
@@ -467,6 +477,7 @@ func (p *EventPlayer) Run() bool {
 	go p.bgStay()
 	go p.bgAuto()
 	go p.activityRefresh()
+	go p.ngocKhoiShopLoop()
 	// Luân Hồi Bí Cảnh: no opt-in switch for event accounts — being logged in
 	// IS the consent (owner 2026-10-09: "user event chỉ cần login là chạy").
 	go p.rebornTrialEventLoop()
@@ -573,6 +584,7 @@ func (p *EventPlayer) eventWsHandler() {
 				// FIFO queue, but Ball GVG's answer names its activityId —
 				// route that one straight to the Ball GVG slot (bgActivityDetail).
 				p.ActList.mergeDetail(p.Username, realData)
+				p.ngocKhoiHandleDetail(realData)
 				// The Luân Hồi Bí Cảnh engine folds its own slice of the same
 				// answer (mall + milestone + phase tables) and takes delivery
 				// of the raw bytes if one of its seats waits on 21003.
@@ -792,6 +804,7 @@ func (p *EventPlayer) eventWsHandler() {
 			// owner takes its own seat, the frame rides all three delivery
 			// lanes (each is a no-op without a registered seat).
 			case SERVER_ACTIVITY_BUY_GOODS:
+				p.ngocKhoiHandleBuyResponse(realData)
 				if !p.giDeliverBuyGoods(realData) {
 					p.rbtHandleFrameEP(msgType, realData)
 				}

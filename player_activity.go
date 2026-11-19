@@ -56,6 +56,7 @@ var activityWatchTypes = []int32{
 	333, // Peak Island (Thiên Ma)
 	341, // Big Chess
 	346, // Holy Land (Cửu U)
+	321, // Ngự Khôi Tranh Phong (shop-only engine)
 }
 
 // activityEntry is the stored slice of ActivityMainConfig we care about —
