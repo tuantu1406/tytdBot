@@ -52,6 +52,11 @@ cost rules, and guessing here is what burns whole sessions later.
   `7d71`. Đây chỉ là observation của một lượt, chưa đủ để gọi tên chúng là
   “bắt đầu”, “chọn màn” hay “hành động”; phải pin payload/response trước khi
   viết auto-play.
+- **Capture tiêu hao lượt 2026-11-20:** khi người dùng bắt đầu đúng một lượt,
+  request `8aa8` xuất hiện với `{activityId:9064454, field2:1}`, sau đó có
+  response `7d68` và trạng thái `8aa7`. Đây là ứng viên cổng tiêu hao lượt;
+  phải đối chiếu bộ đếm trên UI trước/sau một lượt nữa trước khi tự động hóa
+  việc chạy nhiều lượt.
 - **Capture map/gameplay 2026-11-20:** lượt `Tự Động` ghi nhận `8aa7`
   `{activityId:9064454, field2:1, field3:0}` lặp nhiều lần; `8ab1` với các
   giá trị `1005`, `1010`, `1009`, `1006`, `1002`, `1004` và đôi lúc thêm
