@@ -10,9 +10,6 @@ import (
 	pb "google.golang.org/protobuf/proto"
 )
 
-const ngocKhoiActivityType int32 = 321
-const ngocKhoiGuildConditionID int32 = 10003
-
 // ngocKhoiHandleDetail consumes only the server-authored 21003 config for
 // activity type 321. It never treats UI labels as authority.
 func (p *EventPlayer) ngocKhoiHandleDetail(data []byte) {
