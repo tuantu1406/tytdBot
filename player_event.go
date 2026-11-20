@@ -86,13 +86,14 @@ type EventPlayer struct {
 	// Ngự Khôi Tranh Phong shop-only automation. The engine is deliberately
 	// limited to rows selected by ngocKhoiShopKind; money rows never enter the
 	// pending queue.
-	NgocKhoiMu       sync.Mutex
-	ngocKhoiID       int32
-	ngocKhoiRows     []*proto.ActivityMallTempMsg
-	ngocKhoiBought   map[int32]int64
-	ngocKhoiPending  []int32
-	ngocKhoiDetail   time.Time
-	ngocKhoiGuildDay string
+	NgocKhoiMu         sync.Mutex
+	ngocKhoiID         int32
+	ngocKhoiRows       []*proto.ActivityMallTempMsg
+	ngocKhoiBought     map[int32]int64
+	ngocKhoiPending    []int32
+	ngocKhoiDetail     time.Time
+	ngocKhoiGuildDay   string
+	ngocKhoiActionSlot string
 	// Inspector is optional and read-only; it observes packets for offline
 	// diagnostics and never sends a packet on its own.
 	Inspector *eventinspector.Analyzer

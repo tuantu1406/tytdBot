@@ -1,7 +1,10 @@
 package tytd_go
 
 import (
+	"errors"
 	"log"
+	"strconv"
+	"strings"
 	"time"
 
 	pb "google.golang.org/protobuf/proto"
@@ -49,15 +52,30 @@ func (p *Player) ngocKhoiPlayerClaimGuild(activityID int32) {
 		return
 	}
 	p.NgocKhoiMu.Unlock()
-	rewards, err := p.rbtClaimCross(activityID, ngocKhoiGuildConditionID)
-	if err != nil {
-		log.Printf("[%s] [NgocKhoi] nhận mốc bang lỗi/từ chối: %v", p.Username, err)
+	claimed := false
+	for _, raw := range strings.Split(ngocKhoiGuildConditionIDs, ",") {
+		cid, _ := strconv.Atoi(raw)
+		rewards, err := p.swClaimCond(activityID, int32(cid))
+		if err != nil && errors.Is(err, errStTimeout) {
+			time.Sleep(500 * time.Millisecond)
+			rewards, err = p.swClaimCond(activityID, int32(cid))
+		}
+		if err != nil {
+			log.Printf("[%s] [NgocKhoi] mốc %d lỗi/từ chối: %v", p.Username, cid, err)
+			continue
+		}
+		if rewards == "" {
+			continue
+		}
+		claimed = true
+		log.Printf("[%s] [NgocKhoi] đã nhận mốc bang conditionId=%d rewards=%s", p.Username, cid, rewards)
+	}
+	if !claimed {
 		return
 	}
 	p.NgocKhoiMu.Lock()
 	p.ngocKhoiGuildDay = today
 	p.NgocKhoiMu.Unlock()
-	log.Printf("[%s] [NgocKhoi] nhận mốc bang conditionId=%d rewards=%s", p.Username, ngocKhoiGuildConditionID, rewards)
 }
 
 func (p *Player) ngocKhoiPlayerLoop() {
@@ -68,6 +86,12 @@ func (p *Player) ngocKhoiPlayerLoop() {
 		case <-p.ctx.Done():
 			return
 		case <-t.C:
+			p.NgocKhoiMu.Lock()
+			id := p.ngocKhoiID
+			p.NgocKhoiMu.Unlock()
+			if id != 0 {
+				p.ngocKhoiVerifiedCycle(id, "continuous")
+			}
 			p.ngocKhoiPlayerStep()
 		}
 	}
