@@ -39,6 +39,13 @@ cost rules, and guessing here is what burns whole sessions later.
   (hex `5235`) với `{activityId:9064454, conditionId:10001}` và response `03ef`.
   `10001` chưa được gán nghĩa gameplay; phải lấy thêm capture khi người dùng
   chủ động bấm đúng nút và đối chiếu response trước khi tự động hóa.
+- **Capture bảng điểm/xếp hạng 2026-11-20:** quan sát thêm request opcode
+  `5141` với `{type:321, mode:1/2, activityId:9064454}`, request `5407` với
+  `{activityId:9064454}`, `5235` với `conditionId=10002`, và `5229` với
+  `conditionId=10045`. Đây mới là wire observations; chưa đủ schema để gọi
+  chúng là “mở bảng điểm”, “nhận thưởng” hay “xếp hạng”. Các opcode `8aa6`,
+  `8ab1`, `8ac5` xuất hiện cùng lúc với tác vụ nền khác và không được gán cho
+  Ngự Khôi nếu chưa có pair request/response rõ ràng.
 
 ## 0. Quy tắc nền tảng (vi phạm sẽ phải làm lại)
 - **WELFARE PARITY LAW (owner 2026-11-13: "event nào cũng phải auto phát/nhận
