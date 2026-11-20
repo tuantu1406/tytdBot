@@ -29,3 +29,13 @@ func TestNgocKhoiTreeClaimPayload(t *testing.T) {
 		t.Fatalf("unexpected tree claim command/response")
 	}
 }
+
+func TestNgocKhoiTreeLevelRewardPayload(t *testing.T) {
+	b := ngocKhoiTreeLevelRewardPayload(9064454)
+	if len(b) != 5 || b[0] != 0x08 {
+		t.Fatalf("unexpected level reward payload: %x", b)
+	}
+	if ngocKhoiTreeLevelRewardCmd != "000397fd" || ngocKhoiTreeLevelRewardResp != "7d81" {
+		t.Fatalf("unexpected level reward command/response")
+	}
+}

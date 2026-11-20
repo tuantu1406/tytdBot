@@ -4,13 +4,15 @@ import "google.golang.org/protobuf/encoding/protowire"
 
 // Ngự Khôi Tranh Phong (activity type 321) — verified wire facts.
 const (
-	ngocKhoiActivityType     int32 = 321
-	ngocKhoiGuildConditionID int32 = 10003
-	ngocKhoiEnterCmd               = "00005141"
-	ngocKhoiTreeDonateCmd          = "000397ff" // wire 8ac3, captured 2026-11-20
-	ngocKhoiTreeDonateResp         = "7d83"
-	ngocKhoiTreeClaimCmd           = "000397fe" // wire 8ac2, captured 2026-11-20
-	ngocKhoiTreeClaimResp          = "7d82"
+	ngocKhoiActivityType        int32 = 321
+	ngocKhoiGuildConditionID    int32 = 10003
+	ngocKhoiEnterCmd                  = "00005141"
+	ngocKhoiTreeDonateCmd             = "000397ff" // wire 8ac3, captured 2026-11-20
+	ngocKhoiTreeDonateResp            = "7d83"
+	ngocKhoiTreeClaimCmd              = "000397fe" // wire 8ac2, captured 2026-11-20
+	ngocKhoiTreeClaimResp             = "7d82"
+	ngocKhoiTreeLevelRewardCmd        = "000397fd" // wire 8ac1, captured 2026-11-20
+	ngocKhoiTreeLevelRewardResp       = "7d81"
 )
 
 // ngocKhoiEnterPayload builds the request captured while opening the event.
@@ -50,5 +52,14 @@ func ngocKhoiTreeClaimPayload(activityID, claimMode int32) []byte {
 	b = protowire.AppendVarint(b, uint64(activityID))
 	b = protowire.AppendTag(b, 2, protowire.VarintType)
 	b = protowire.AppendVarint(b, uint64(claimMode))
+	return b
+}
+
+// ngocKhoiTreeLevelRewardPayload builds the level-up reward claim
+// {activityId} captured from the event panel.
+func ngocKhoiTreeLevelRewardPayload(activityID int32) []byte {
+	b := make([]byte, 0, 8)
+	b = protowire.AppendTag(b, 1, protowire.VarintType)
+	b = protowire.AppendVarint(b, uint64(activityID))
 	return b
 }

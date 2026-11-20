@@ -60,6 +60,9 @@ cost rules, and guessing here is what burns whole sessions later.
   `{activityId:9064454, claimMode:0}` và response wire `7d82`. Cặp này đi
   cùng luồng cây đã capture (`8ac3`/`7d83`); chưa tự động gửi cho tới khi có
   seat/response routing riêng và điều kiện “có quả sẵn”.
+- **Capture nhận quà lên level 2026-11-20:** request wire `8ac1` với chỉ
+  `{activityId:9064454}` và response wire `7d81`. Đây là claim quà level của
+  cây, khác với `8ac2` nhận cây/quả; chỉ gửi khi trạng thái server báo có quà.
 
 ## 0. Quy tắc nền tảng (vi phạm sẽ phải làm lại)
 - **WELFARE PARITY LAW (owner 2026-11-13: "event nào cũng phải auto phát/nhận
