@@ -57,6 +57,14 @@ cost rules, and guessing here is what burns whole sessions later.
   response `7d68` và trạng thái `8aa7`. Đây là ứng viên cổng tiêu hao lượt;
   phải đối chiếu bộ đếm trên UI trước/sau một lượt nữa trước khi tự động hóa
   việc chạy nhiều lượt.
+- **Capture manual battle 2026-11-20:** khi tắt auto và đánh thủ công, chuỗi
+  xác nhận rõ hơn: `8aa8 {activityId:9064454, field2:1}` → response `7d68`,
+  sau đó `8aa7 {activityId:9064454, field2:1, field3:0}`; tiếp theo `8ab1`
+  với `{activityId:9064454, field2:1007, field7:5}`, rồi `field7=24` và
+  `field7=25`; response có `7d67`, `7d68`, `7d71`, `7d91`. Kết luận tạm:
+  `8aa8/7d68` là cổng tiêu hao lượt; `1007`/`field7` là state combat chưa
+  được đặt tên chắc chắn. Không dùng `field7` làm HP/điểm nếu chưa decode
+  response đầy đủ.
 - **Capture map/gameplay 2026-11-20:** lượt `Tự Động` ghi nhận `8aa7`
   `{activityId:9064454, field2:1, field3:0}` lặp nhiều lần; `8ab1` với các
   giá trị `1005`, `1010`, `1009`, `1006`, `1002`, `1004` và đôi lúc thêm
