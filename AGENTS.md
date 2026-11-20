@@ -56,6 +56,10 @@ cost rules, and guessing here is what burns whole sessions later.
   `8ab1` có `{activityId:9064454, field2:1008, field6:1}` và response `7d71`.
   Không có `8aa8` trong chuỗi này, nên popup không trực tiếp tiêu hao thêm
   lượt; `field2=1008/field6=1` là action đã xác minh nhưng chưa gán tên UI.
+- **Capture mặc đồ tăng Yêu Lực 2026-11-20:** request `8ab2` với
+  `{activityId:9064454, field2:35, field3:1, field4:3, field5:21, field6:0}`
+  và response `7d72`. `8ab2` là opcode đa mục đích (combat cũng dùng), nên
+  phải phân biệt theo toàn bộ field; không được dùng riêng opcode để route.
 - **Capture tiêu hao lượt 2026-11-20:** khi người dùng bắt đầu đúng một lượt,
   request `8aa8` xuất hiện với `{activityId:9064454, field2:1}`, sau đó có
   response `7d68` và trạng thái `8aa7`. Đây là ứng viên cổng tiêu hao lượt;
