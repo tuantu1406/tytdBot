@@ -46,6 +46,12 @@ cost rules, and guessing here is what burns whole sessions later.
   chúng là “mở bảng điểm”, “nhận thưởng” hay “xếp hạng”. Các opcode `8aa6`,
   `8ab1`, `8ac5` xuất hiện cùng lúc với tác vụ nền khác và không được gán cho
   Ngự Khôi nếu chưa có pair request/response rõ ràng.
+- **Capture một lượt gameplay 2026-11-20:** quan sát request `8aa7` với
+  `{activityId:9064454, field2:1, field3:0}` và request `8ab1` với
+  `{activityId:9064454, field2:1002}`; response quan sát được gồm `7d67` và
+  `7d71`. Đây chỉ là observation của một lượt, chưa đủ để gọi tên chúng là
+  “bắt đầu”, “chọn màn” hay “hành động”; phải pin payload/response trước khi
+  viết auto-play.
 - **Capture nhận mốc bang 2026-11-20:** thao tác người dùng bấm nhận đã tạo
   request `21045` (hex `5235`) với `{activityId:9064454, conditionId:10003}`
   và response `0415` (hex `0415`, ret/reward). Đây là capture xác minh đầu
