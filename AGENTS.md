@@ -34,6 +34,11 @@ cost rules, and guessing here is what burns whole sessions later.
 - **Hiện trạng:** `ngockhoi_shop.go` và handler Player/EventPlayer mới bao phủ
   shop. Chưa gọi đây là tự động hóa toàn event cho tới khi có capture và test
   offline cho gameplay, phần thưởng, trạng thái và retry.
+- **Capture live 2026-11-20:** `21003` request cho `activityId=9064454` đã trả
+  `ret=0`; cấu hình hiện tại có 39 row shop. Capture cũng thấy request `21045`
+  (hex `5235`) với `{activityId:9064454, conditionId:10001}` và response `03ef`.
+  `10001` chưa được gán nghĩa gameplay; phải lấy thêm capture khi người dùng
+  chủ động bấm đúng nút và đối chiếu response trước khi tự động hóa.
 
 ## 0. Quy tắc nền tảng (vi phạm sẽ phải làm lại)
 - **WELFARE PARITY LAW (owner 2026-11-13: "event nào cũng phải auto phát/nhận
