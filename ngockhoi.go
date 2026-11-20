@@ -9,6 +9,8 @@ const (
 	ngocKhoiEnterCmd               = "00005141"
 	ngocKhoiTreeDonateCmd          = "000397ff" // wire 8ac3, captured 2026-11-20
 	ngocKhoiTreeDonateResp         = "7d83"
+	ngocKhoiTreeClaimCmd           = "000397fe" // wire 8ac2, captured 2026-11-20
+	ngocKhoiTreeClaimResp          = "7d82"
 )
 
 // ngocKhoiEnterPayload builds the request captured while opening the event.
@@ -37,5 +39,16 @@ func ngocKhoiTreeDonatePayload(activityID, itemID, count int32) []byte {
 	b = protowire.AppendVarint(b, uint64(itemID))
 	b = protowire.AppendTag(b, 3, protowire.VarintType)
 	b = protowire.AppendVarint(b, uint64(count))
+	return b
+}
+
+// ngocKhoiTreeClaimPayload builds the captured claim request
+// {activityId, claimMode}. The observed claimMode is 0 and remains explicit.
+func ngocKhoiTreeClaimPayload(activityID, claimMode int32) []byte {
+	b := make([]byte, 0, 12)
+	b = protowire.AppendTag(b, 1, protowire.VarintType)
+	b = protowire.AppendVarint(b, uint64(activityID))
+	b = protowire.AppendTag(b, 2, protowire.VarintType)
+	b = protowire.AppendVarint(b, uint64(claimMode))
 	return b
 }

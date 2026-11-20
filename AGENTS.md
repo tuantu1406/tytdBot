@@ -56,6 +56,10 @@ cost rules, and guessing here is what burns whole sessions later.
   Item `105324` là item duy nhất được user chủ động dùng trong capture; chưa
   được phép suy rộng sang item khác. Cần capture tiếp nút nhận cây/quả trước
   khi viết vòng welfare tự động.
+- **Capture nhận cây/quả 2026-11-20:** request wire `8ac2` với
+  `{activityId:9064454, claimMode:0}` và response wire `7d82`. Cặp này đi
+  cùng luồng cây đã capture (`8ac3`/`7d83`); chưa tự động gửi cho tới khi có
+  seat/response routing riêng và điều kiện “có quả sẵn”.
 
 ## 0. Quy tắc nền tảng (vi phạm sẽ phải làm lại)
 - **WELFARE PARITY LAW (owner 2026-11-13: "event nào cũng phải auto phát/nhận
