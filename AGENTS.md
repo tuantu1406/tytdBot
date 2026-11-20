@@ -60,6 +60,10 @@ cost rules, and guessing here is what burns whole sessions later.
   `{activityId:9064454, field2:35, field3:1, field4:3, field5:21, field6:0}`
   và response `7d72`. `8ab2` là opcode đa mục đích (combat cũng dùng), nên
   phải phân biệt theo toàn bộ field; không được dùng riêng opcode để route.
+- **Capture đổi vị trí trang bị 2026-11-20:** request `8ab4` với
+  `{activityId:9064454, field2:1, field3:2, field4:2, field5:2}` và response
+  `7d74`. Đây là request riêng cho reorder; chỉ tối ưu sau khi đọc Yêu Lực
+  trước/sau và không thử hoán vị hàng loạt trên tài khoản thật.
 - **Capture tiêu hao lượt 2026-11-20:** khi người dùng bắt đầu đúng một lượt,
   request `8aa8` xuất hiện với `{activityId:9064454, field2:1}`, sau đó có
   response `7d68` và trạng thái `8aa7`. Đây là ứng viên cổng tiêu hao lượt;

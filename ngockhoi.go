@@ -13,6 +13,8 @@ const (
 	ngocKhoiTreeClaimResp             = "7d82"
 	ngocKhoiTreeLevelRewardCmd        = "000397fd" // wire 8ac1, captured 2026-11-20
 	ngocKhoiTreeLevelRewardResp       = "7d81"
+	ngocKhoiEquipReorderCmd           = "000397f4" // wire 8ab4, captured 2026-11-20
+	ngocKhoiEquipReorderResp          = "7d74"
 )
 
 // ngocKhoiEnterPayload builds the request captured while opening the event.
@@ -61,5 +63,15 @@ func ngocKhoiTreeLevelRewardPayload(activityID int32) []byte {
 	b := make([]byte, 0, 8)
 	b = protowire.AppendTag(b, 1, protowire.VarintType)
 	b = protowire.AppendVarint(b, uint64(activityID))
+	return b
+}
+
+// ngocKhoiEquipReorderPayload builds the captured reorder request.
+func ngocKhoiEquipReorderPayload(activityID, mode, from, to, slot int32) []byte {
+	b := make([]byte, 0, 16)
+	for field, value := range []int32{activityID, mode, from, to, slot} {
+		b = protowire.AppendTag(b, protowire.Number(field+1), protowire.VarintType)
+		b = protowire.AppendVarint(b, uint64(value))
+	}
 	return b
 }

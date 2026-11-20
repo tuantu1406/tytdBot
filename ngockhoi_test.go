@@ -39,3 +39,13 @@ func TestNgocKhoiTreeLevelRewardPayload(t *testing.T) {
 		t.Fatalf("unexpected level reward command/response")
 	}
 }
+
+func TestNgocKhoiEquipReorderPayload(t *testing.T) {
+	b := ngocKhoiEquipReorderPayload(9064454, 1, 2, 2, 2)
+	if len(b) == 0 || b[0] != 0x08 || b[len(b)-1] != 0x02 {
+		t.Fatalf("unexpected reorder payload: %x", b)
+	}
+	if ngocKhoiEquipReorderCmd != "000397f4" || ngocKhoiEquipReorderResp != "7d74" {
+		t.Fatalf("unexpected reorder command/response")
+	}
+}
