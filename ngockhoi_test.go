@@ -22,7 +22,7 @@ func TestNgocKhoiTreeDonatePayload(t *testing.T) {
 
 func TestNgocKhoiTreeClaimPayload(t *testing.T) {
 	b := ngocKhoiTreeClaimPayload(9064454, 0)
-	if len(b) != 4 || b[0] != 0x08 || b[2] != 0x10 || b[3] != 0x00 {
+	if len(b) != 7 || b[0] != 0x08 || b[5] != 0x10 || b[6] != 0x00 {
 		t.Fatalf("unexpected tree claim payload: %x", b)
 	}
 	if ngocKhoiTreeClaimCmd != "000397fe" || ngocKhoiTreeClaimResp != "7d82" {
