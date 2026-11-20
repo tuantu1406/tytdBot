@@ -7,6 +7,8 @@ const (
 	ngocKhoiActivityType     int32 = 321
 	ngocKhoiGuildConditionID int32 = 10003
 	ngocKhoiEnterCmd               = "00005141"
+	ngocKhoiTreeDonateCmd          = "000397ff" // wire 8ac3, captured 2026-11-20
+	ngocKhoiTreeDonateResp         = "7d83"
 )
 
 // ngocKhoiEnterPayload builds the request captured while opening the event.
@@ -21,5 +23,19 @@ func ngocKhoiEnterPayload(mode, activityID int32) []byte {
 	b = protowire.AppendVarint(b, uint64(mode))
 	b = protowire.AppendTag(b, 3, protowire.VarintType)
 	b = protowire.AppendVarint(b, uint64(activityID))
+	return b
+}
+
+// ngocKhoiTreeDonatePayload builds the captured free/authorised tree action:
+// {activityId, itemId, count}. The item id is deliberately supplied by the
+// caller so the item-ban boundary cannot be bypassed by a guessed default.
+func ngocKhoiTreeDonatePayload(activityID, itemID, count int32) []byte {
+	b := make([]byte, 0, 16)
+	b = protowire.AppendTag(b, 1, protowire.VarintType)
+	b = protowire.AppendVarint(b, uint64(activityID))
+	b = protowire.AppendTag(b, 2, protowire.VarintType)
+	b = protowire.AppendVarint(b, uint64(itemID))
+	b = protowire.AppendTag(b, 3, protowire.VarintType)
+	b = protowire.AppendVarint(b, uint64(count))
 	return b
 }

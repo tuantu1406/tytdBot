@@ -51,6 +51,11 @@ cost rules, and guessing here is what burns whole sessions later.
   và response `0415` (hex `0415`, ret/reward). Đây là capture xác minh đầu
   tiên cho đường nhận mốc bang của Ngự Khôi; chỉ được dùng đúng request này
   sau khi thêm seat tuần tự chung với các flow `21045` hiện có.
+- **Capture tưới/phát cây 2026-11-20:** request wire `8ac3` với
+  `{activityId:9064454, itemId:105324, count:1}` và response wire `7d83`.
+  Item `105324` là item duy nhất được user chủ động dùng trong capture; chưa
+  được phép suy rộng sang item khác. Cần capture tiếp nút nhận cây/quả trước
+  khi viết vòng welfare tự động.
 
 ## 0. Quy tắc nền tảng (vi phạm sẽ phải làm lại)
 - **WELFARE PARITY LAW (owner 2026-11-13: "event nào cũng phải auto phát/nhận

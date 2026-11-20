@@ -9,3 +9,13 @@ func TestNgocKhoiEnterPayload(t *testing.T) {
 		t.Fatalf("payload=%x want=%x", got, want)
 	}
 }
+
+func TestNgocKhoiTreeDonatePayload(t *testing.T) {
+	b := ngocKhoiTreeDonatePayload(9064454, 105324, 1)
+	if len(b) == 0 || b[0] != 0x08 || b[len(b)-1] != 0x01 {
+		t.Fatalf("unexpected tree donate payload: %x", b)
+	}
+	if got := ngocKhoiTreeDonateCmd; got != "000397ff" {
+		t.Fatalf("command=%s", got)
+	}
+}
