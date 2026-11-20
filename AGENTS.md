@@ -6,6 +6,35 @@ phases in order. Do not skip the discovery phase even if the event "looks like" 
 existing one — two events sharing an engine can still differ in grid, items, and
 cost rules, and guessing here is what burns whole sessions later.
 
+## 0.1. Ngự Khôi Tranh Phong — trạng thái xác minh và cách tối ưu
+
+- **Đã xác minh:** event type `321`; cấu hình shop từ `21003`; mua gói dùng
+  `21005`; chỉ cho phép row miễn phí (`price=0` hoặc `=0`), quảng cáo
+  (`param` bắt đầu bằng `3|`) và Tiên Ngọc (`price=100000=N`). Row tiền thật
+  tuyệt đối không được gửi.
+- **Chưa xác minh:** vòng chơi chính, nhiệm vụ, điểm, xếp hạng, phần thưởng,
+  chi phí vật phẩm và thứ tự thao tác. Không suy ra các phần này từ tên nút
+  hoặc event khác. Phải capture `21001`/`21036`, lấy `21003`, rồi ghi lại một
+  chuỗi thao tác do người dùng chủ động thực hiện trước khi viết handler.
+- **Thứ tự tối ưu an toàn:** đọc activity/config; nhận gói miễn phí; ghi nhận
+  `ret` và giới hạn; chỉ khi người dùng cho phép mới thử gói quảng cáo; Tiên
+  Ngọc chỉ chạy sau khi `price`, `mallId`, `buyLimit` và điều kiện được server
+  xác nhận; gameplay khác phải có capture riêng.
+- **Shared response 21005:** response mua không mang `mallId`/`activityId`,
+  nên các event dùng chung opcode này phải dùng một hàng đợi/seat tuần tự duy
+  nhất. Không để Ngự Khôi, Luân Hồi, Thiên Ma hoặc shop khác mua đồng thời trên
+  cùng socket. Nếu một `mallId` thành công lặp lại, dừng bot và kiểm tra
+  attribution trước khi chạy tiếp.
+- **Idempotency:** mỗi request chỉ mua `count=1`; cộng số đã mua từ
+  `mallBuyCountList` và số thành công cục bộ; `ret!=0` không được tính là mua.
+  Khi chưa xác định response thuộc event nào, không tăng bộ đếm.
+- **Live-test gate:** chỉ chạy trên tài khoản kiểm thử do người dùng chỉ định,
+  không chạy đồng thời với production, không tiêu vật phẩm ngoài Tiên Ngọc đã
+  được nêu rõ, và dừng ngay khi có response lặp/không xác định.
+- **Hiện trạng:** `ngockhoi_shop.go` và handler Player/EventPlayer mới bao phủ
+  shop. Chưa gọi đây là tự động hóa toàn event cho tới khi có capture và test
+  offline cho gameplay, phần thưởng, trạng thái và retry.
+
 ## 0. Quy tắc nền tảng (vi phạm sẽ phải làm lại)
 - **WELFARE PARITY LAW (owner 2026-11-13: "event nào cũng phải auto phát/nhận
   cây, nhận thưởng bang, mua gói…")** — EVERY event auto-engine ships with the
