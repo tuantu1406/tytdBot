@@ -75,12 +75,13 @@ type Player struct {
 	ActList activityStore
 	// Ngoc Khoi shop-only state; only verified free/ad/Tiên Ngọc rows enter
 	// the queue. Money rows are rejected by ngocKhoiShopRequests.
-	NgocKhoiMu      sync.Mutex
-	ngocKhoiID      int32
-	ngocKhoiRows    []*proto.ActivityMallTempMsg
-	ngocKhoiBought  map[int32]int64
-	ngocKhoiPending []int32
-	ngocKhoiDetail  time.Time
+	NgocKhoiMu       sync.Mutex
+	ngocKhoiID       int32
+	ngocKhoiRows     []*proto.ActivityMallTempMsg
+	ngocKhoiBought   map[int32]int64
+	ngocKhoiPending  []int32
+	ngocKhoiDetail   time.Time
+	ngocKhoiGuildDay string
 	// Inspector is optional and read-only. When set, the websocket reader and
 	// writer record packet metadata for offline analysis; no packet is emitted.
 	Inspector *eventinspector.Analyzer

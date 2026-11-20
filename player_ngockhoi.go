@@ -38,6 +38,26 @@ func (p *Player) ngocKhoiPlayerHandleDetail(data []byte) {
 	if len(rows) > 0 {
 		log.Printf("[%s] [NgocKhoi] đã đọc %d gói, đã mua hôm nay: %v", p.Username, len(rows), bought)
 	}
+	p.ngocKhoiPlayerClaimGuild(main.GetActivityId())
+}
+
+func (p *Player) ngocKhoiPlayerClaimGuild(activityID int32) {
+	today := time.Now().In(ictZone).Format("2006-01-02")
+	p.NgocKhoiMu.Lock()
+	if p.ngocKhoiGuildDay == today {
+		p.NgocKhoiMu.Unlock()
+		return
+	}
+	p.NgocKhoiMu.Unlock()
+	rewards, err := p.rbtClaimCross(activityID, ngocKhoiGuildConditionID)
+	if err != nil {
+		log.Printf("[%s] [NgocKhoi] nhận mốc bang lỗi/từ chối: %v", p.Username, err)
+		return
+	}
+	p.NgocKhoiMu.Lock()
+	p.ngocKhoiGuildDay = today
+	p.NgocKhoiMu.Unlock()
+	log.Printf("[%s] [NgocKhoi] nhận mốc bang conditionId=%d rewards=%s", p.Username, ngocKhoiGuildConditionID, rewards)
 }
 
 func (p *Player) ngocKhoiPlayerLoop() {
