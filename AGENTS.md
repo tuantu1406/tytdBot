@@ -52,6 +52,10 @@ cost rules, and guessing here is what burns whole sessions later.
   `7d71`. Đây chỉ là observation của một lượt, chưa đủ để gọi tên chúng là
   “bắt đầu”, “chọn màn” hay “hành động”; phải pin payload/response trước khi
   viết auto-play.
+- **Capture popup đặc biệt số 1 2026-11-20:** sau khi hoàn thành popup, request
+  `8ab1` có `{activityId:9064454, field2:1008, field6:1}` và response `7d71`.
+  Không có `8aa8` trong chuỗi này, nên popup không trực tiếp tiêu hao thêm
+  lượt; `field2=1008/field6=1` là action đã xác minh nhưng chưa gán tên UI.
 - **Capture tiêu hao lượt 2026-11-20:** khi người dùng bắt đầu đúng một lượt,
   request `8aa8` xuất hiện với `{activityId:9064454, field2:1}`, sau đó có
   response `7d68` và trạng thái `8aa7`. Đây là ứng viên cổng tiêu hao lượt;
