@@ -46,6 +46,11 @@ cost rules, and guessing here is what burns whole sessions later.
   chúng là “mở bảng điểm”, “nhận thưởng” hay “xếp hạng”. Các opcode `8aa6`,
   `8ab1`, `8ac5` xuất hiện cùng lúc với tác vụ nền khác và không được gán cho
   Ngự Khôi nếu chưa có pair request/response rõ ràng.
+- **Capture nhận mốc bang 2026-11-20:** thao tác người dùng bấm nhận đã tạo
+  request `21045` (hex `5235`) với `{activityId:9064454, conditionId:10003}`
+  và response `0415` (hex `0415`, ret/reward). Đây là capture xác minh đầu
+  tiên cho đường nhận mốc bang của Ngự Khôi; chỉ được dùng đúng request này
+  sau khi thêm seat tuần tự chung với các flow `21045` hiện có.
 
 ## 0. Quy tắc nền tảng (vi phạm sẽ phải làm lại)
 - **WELFARE PARITY LAW (owner 2026-11-13: "event nào cũng phải auto phát/nhận
