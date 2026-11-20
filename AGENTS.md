@@ -52,6 +52,14 @@ cost rules, and guessing here is what burns whole sessions later.
   `7d71`. Đây chỉ là observation của một lượt, chưa đủ để gọi tên chúng là
   “bắt đầu”, “chọn màn” hay “hành động”; phải pin payload/response trước khi
   viết auto-play.
+- **Capture map/gameplay 2026-11-20:** lượt `Tự Động` ghi nhận `8aa7`
+  `{activityId:9064454, field2:1, field3:0}` lặp nhiều lần; `8ab1` với các
+  giá trị `1005`, `1010`, `1009`, `1006`, `1002`, `1004` và đôi lúc thêm
+  `field3=30/33/37, field5=3`; `8ab2` với các bộ field như
+  `{2:7,3:1,4:2}`, `{2:6,3:2,4:3}`, `{2:10,3:2,4:1}`, `{2:9,3:1,4:3}`.
+  Response gameplay quan sát được: `7d67`, `7d71`, `7d72`, `7d91`, `7d8f`.
+  Đây là wire data của một lượt tự động; chưa gán field thành tọa độ/quái/
+  phần thưởng cho tới khi có capture manual từng nút.
 - **Capture nhận mốc bang 2026-11-20:** thao tác người dùng bấm nhận đã tạo
   request `21045` (hex `5235`) với `{activityId:9064454, conditionId:10003}`
   và response `0415` (hex `0415`, ret/reward). Đây là capture xác minh đầu
