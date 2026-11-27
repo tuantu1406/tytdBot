@@ -177,6 +177,9 @@ func (t *TeleBot) startEventPlayerLoginForDeputy(u *model.User, leaderChatID int
 	}
 
 	p := &EventPlayer{}
+	// Delegated accounts have no event-owned opt-in setting. Keep Type 131
+	// commerce disabled for them unless the owning account gets its own control.
+	p.OffQiling.Store(true)
 	p.UID = uint64(realUID)
 	p.Username = u.Username
 	p.Password = u.Password

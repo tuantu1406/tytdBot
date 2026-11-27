@@ -46,6 +46,7 @@ var (
 // within minutes instead of an hour.
 var activityWatchTypes = []int32{
 	68,  // God Island (Bồng Lai)
+	131, // Qiling Area / Tứ Thánh Bảo Vực
 	119, // Cast Sword (luyện khí 2048)
 	130, // ComposeBall (đại hội luyện khí / thần long)
 	150, // Sky Trade (Thương Đồ Tiên Vực)

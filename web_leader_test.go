@@ -1647,6 +1647,7 @@ func TestWebEventConfigAndBulk(t *testing.T) {
 		"action": {"config"}, "member_id": {"9841"},
 		"shown_auto_luanhoi":    {"1"},
 		"shown_auto_thuongminh": {"1"}, "auto_thuongminh": {"on"},
+		"shown_auto_qiling": {"1"}, "auto_qiling": {"on"},
 	})); isErr {
 		t.Fatalf("event config refused: %q", msg)
 	}
@@ -1654,17 +1655,18 @@ func TestWebEventConfigAndBulk(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !m.OffRebornTrial || m.OffSeaWar {
+	if !m.OffRebornTrial || m.OffSeaWar || m.OffQilingArea {
 		t.Fatalf("off-switches not stored: %+v", m)
 	}
-	if !ep.OffRbt || ep.OffSeaWar {
-		t.Fatalf("live EventPlayer not patched: offRbt=%v offSeaWar=%v", ep.OffRbt, ep.OffSeaWar)
+	if !ep.OffRbt || ep.OffSeaWar || ep.OffQiling.Load() {
+		t.Fatalf("live EventPlayer not patched: offRbt=%v offSeaWar=%v offQiling=%v", ep.OffRbt, ep.OffSeaWar, ep.OffQiling.Load())
 	}
 
 	// Bulk: everyone except the delegated account.
 	if msg, isErr := flashOf(t, doPost(t, h, "/events", cookie, csrf, url.Values{
 		"action":             {"config_all"},
 		"shown_auto_luanhoi": {"1"}, "auto_luanhoi": {"on"},
+		"shown_auto_qiling": {"1"},
 	})); isErr {
 		t.Fatalf("event config_all refused: %q", msg)
 	}
@@ -1673,11 +1675,11 @@ func TestWebEventConfigAndBulk(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if m.OffRebornTrial || m.OffSeaWar {
+		if m.OffRebornTrial || m.OffSeaWar || !m.OffQilingArea {
 			t.Fatalf("bulk left %s switched off: %+v", id, m)
 		}
 	}
-	if ep.OffRbt || ep.OffSeaWar {
+	if ep.OffRbt || ep.OffSeaWar || !ep.OffQiling.Load() {
 		t.Fatalf("bulk did not patch the live session: %+v", ep)
 	}
 	// The delegated users row is untouched by the event config (no such row).

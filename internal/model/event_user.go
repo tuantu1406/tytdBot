@@ -8,8 +8,8 @@ import (
 )
 
 // EventUser is a leader-owned game account used for in-game events. It mirrors
-// a member account but has no VIP level, no schedules and no auto-play flags:
-// it only stays logged in, see RunEvent in player_event.go.
+// a member account but has no VIP level or schedules; event-specific automation
+// switches are stored here, see RunEvent in player_event.go.
 type EventUser struct {
 	ID            string    `gorm:"primaryKey" json:"id"`
 	Username      string    `json:"username"`
@@ -22,8 +22,9 @@ type EventUser struct {
 	// Off-switches (leader UI 2026-11-09): deliberately named OFF so existing
 	// rows keep the "login là chạy" law — default false = the loop runs. The
 	// leader's Sự kiện tab flips these; the EP loops check them each pass.
-	OffRebornTrial bool `json:"off_reborn_trial"` // Luân Hồi Bí Cảnh 172
-	OffSeaWar      bool `json:"off_sea_war"`      // Thương Minh Yêu Vực 349
+	OffRebornTrial bool `json:"off_reborn_trial"`                    // Luân Hồi Bí Cảnh 172
+	OffSeaWar      bool `json:"off_sea_war"`                         // Thương Minh Yêu Vực 349
+	OffQilingArea  bool `gorm:"default:true" json:"off_qiling_area"` // Tứ Thánh Bảo Vực 131 commerce, opt-in
 }
 
 // CreateEventUser creates or updates an event user

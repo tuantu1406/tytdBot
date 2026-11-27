@@ -315,14 +315,14 @@
         <form method="post" action="/events" data-live="1"><input type="hidden" name="csrf" value="{{$c}}"><input type="hidden" name="action" value="logout"><input type="hidden" name="member_id" value="{{.M.ID}}">
           <button class="sec mini" type="submit">Đăng xuất</button></form>
         {{if not .Deputy}}
-        {{if or $open.auto_luanhoi $open.auto_thuongminh}}
+        {{if or $open.auto_luanhoi $open.auto_thuongminh $open.auto_qiling}}
         <button class="sec mini" id="ecfb-{{.M.ID}}" type="button" aria-expanded="false" aria-controls="ecfg-{{.M.ID}}" onclick="evCfgToggle('{{.M.ID}}')">Cấu hình ▾</button>
         {{end}}
         <form method="post" action="/events"><input type="hidden" name="csrf" value="{{$c}}"><input type="hidden" name="action" value="remove"><input type="hidden" name="member_id" value="{{.M.ID}}">
           <button class="danger mini" type="submit" onclick="return confirm('Xoá acc sự kiện {{.M.ID}}?')">Xoá</button></form>
         {{end}}
       </div>
-      {{if not .Deputy}}{{if or $open.auto_luanhoi $open.auto_thuongminh}}
+      {{if not .Deputy}}{{if or $open.auto_luanhoi $open.auto_thuongminh $open.auto_qiling}}
       <form class="mcfg" id="ecfg-{{.M.ID}}" method="post" action="/events" data-live="1" hidden>
         <input type="hidden" name="csrf" value="{{$c}}">
         <input type="hidden" name="action" value="config">
@@ -334,11 +334,14 @@
         {{if $open.auto_thuongminh}}
         <label class="sw"><input type="hidden" name="shown_auto_thuongminh" value="1"><input type="checkbox" name="auto_thuongminh" {{if not .M.OffSeaWar}}checked{{end}}><i></i><span>Tự chơi Thương Minh Yêu Vực — chạy free, hỗ trợ đồng đội, rèn bảo thạch ưu tiên sát thương cuối, không bao giờ dùng vật phẩm thể lực, không đánh chiến bang thay</span></label>
         {{end}}
+        {{if $open.auto_qiling}}
+        <label class="sw"><input type="hidden" name="shown_auto_qiling" value="1"><input type="checkbox" name="auto_qiling" {{if not .M.OffQilingArea}}checked{{end}}><i></i><span>Tứ Thánh Bảo Vực: tự thử mua gói miễn phí, gói quảng cáo theo cooldown máy chủ và gói Tiên Ngọc; nhận mốc nạp đủ điều kiện</span></label>
+        {{end}}
         <div class="btns" style="margin-top:10px">
           <button type="submit">Lưu</button>
           <button class="sec mini" type="button" onclick="evCfgToggle('{{.M.ID}}')">Thu gọn</button>
         </div>
-        <p class="small">Mặc định BẬT (login là chạy) — gạt tắt riêng acc này; bật lại có tác dụng trong ≤1 phút kể cả khi đang treo.</p>
+        <p class="small">Luân Hồi và Thương Minh giữ mặc định hiện tại. Tứ Thánh Bảo Vực mặc định tắt; khi bật, các gói quảng cáo được thử bằng request shop như event khác và máy chủ áp dụng cooldown/điều kiện.</p>
       </form>
       {{end}}{{end}}
     </div>

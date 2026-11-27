@@ -128,8 +128,9 @@ type EventPlayer struct {
 	// Leader off-switches (tab Sự kiện, 2026-11-09): seeded from the
 	// EventUser row at login, patched live by webEventAction config —
 	// single bools, loop reads lock-free (same law as Player Running gates).
-	OffRbt    bool // Luân Hồi Bí Cảnh 172
-	OffSeaWar bool // Thương Minh Yêu Vực 349
+	OffRbt    bool        // Luân Hồi Bí Cảnh 172
+	OffSeaWar bool        // Thương Minh Yêu Vực 349
+	OffQiling atomic.Bool // Tứ Thánh Bảo Vực 131
 
 	// "Cắn quả" web card (tab Sự kiện, owner 2026-11-09): swEatBusy guards
 	// one eat-all loop per account (presses while eating are no-ops);
@@ -158,6 +159,12 @@ type EventPlayer struct {
 	rbtMallBought map[int32]int64
 	rbtMallAdds   map[int32]int64
 	rbtMallDay    string
+
+	qlMallRows        []*proto.ActivityMallTempMsg
+	qlMallBought      map[int32]int64
+	qlConditionConfig []*proto.ActivityConditionConfig
+	qlConditionData   []*proto.ActivityConditionData
+	qlClaimed         map[int32]bool
 
 	rbtCondCfgs []*proto.ActivityConditionConfig
 	rbtCondData map[int32]*proto.ActivityConditionData
@@ -458,6 +465,7 @@ func (p *EventPlayer) Run() bool {
 	// IS the consent (owner 2026-10-09: "user event chỉ cần login là chạy").
 	go p.rebornTrialEventLoop()
 	go p.seaWarEventLoop()
+	go p.qilingCommerceLoop()
 
 	p.wsKeepAlive()
 	return true
@@ -561,6 +569,7 @@ func (p *EventPlayer) eventWsHandler() {
 				// answer (mall + milestone + phase tables) and takes delivery
 				// of the raw bytes if one of its seats waits on 21003.
 				p.rbtMergeConfig(realData)
+				p.qlMergeCommerceConfig(realData)
 				p.rbtHandleFrameEP(SERVER_ACTIVITY_DETAIL, realData)
 				// Thương Minh Yêu Vực folds its forge/region tables from the
 				// same shared answer (type-guarded inside) — and its shop
@@ -773,9 +782,8 @@ func (p *EventPlayer) eventWsHandler() {
 			// owner takes its own seat, the frame rides all three delivery
 			// lanes (each is a no-op without a registered seat).
 			case SERVER_ACTIVITY_BUY_GOODS:
-				if !p.giDeliverBuyGoods(realData) {
-					p.rbtHandleFrameEP(msgType, realData)
-				}
+				p.giDeliverBuyGoods(realData)
+				p.rbtHandleFrameEP(msgType, realData)
 				p.swHandleFrameEP(SERVER_ACTIVITY_BUY_GOODS, realData)
 				// TODO: handle further event messages here. Dispatch on msgType
 				// using the SERVER_* constants from command.go (add new ones as

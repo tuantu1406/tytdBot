@@ -638,7 +638,7 @@ var webCfgEvents = []struct {
 	ty  int32
 }{
 	{"auto_thiendo", 150}, {"auto_thiendo_toc", 150}, {"auto_luanhoi", 172},
-	{"auto_tiencanh", 186}, {"auto_thuongminh", 349},
+	{"auto_tiencanh", 186}, {"auto_thuongminh", 349}, {"auto_qiling", 131},
 	// Công tắc-card rows for the non-persist engines (owner 2026-11-09:
 	// "nút thần long + tây du phải check activity đang chạy mới hiện") —
 	// sw_ prefix because these gate switch ROWS, not config checkboxes.

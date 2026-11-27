@@ -107,6 +107,7 @@ func (t *TeleBot) startEventPlayerLogin(eventID string, leaderChatID int64, noti
 	// Leader's off-switches ride in from the DB row (default false = "login
 	// là chạy" preserved for every pre-existing account).
 	p.OffRbt, p.OffSeaWar = u.OffRebornTrial, u.OffSeaWar
+	p.OffQiling.Store(u.OffQilingArea)
 	// Web live wire (see startPlayerLogin): flips re-push the LEADER's state
 	// frame so the Sự kiện row pills follow the account.
 	p.OnRunningChange = func() { t.pushWebState(realUID) }
@@ -276,11 +277,12 @@ func (t *TeleBot) AddEventMemberHandler(ctx context.Context, b *bot.Bot, update 
 
 	// Create event user account (no VIP level needed)
 	u := &model.EventUser{
-		ID:       randomID,
-		Username: username,
-		Password: password,
-		ServerID: serverID,
-		LeaderID: fmt.Sprintf("%d", message.Chat.ID),
+		ID:            randomID,
+		Username:      username,
+		Password:      password,
+		ServerID:      serverID,
+		LeaderID:      fmt.Sprintf("%d", message.Chat.ID),
+		OffQilingArea: true,
 	}
 
 	err = model.CreateEventUser(t.ydb.GetDB(), u)

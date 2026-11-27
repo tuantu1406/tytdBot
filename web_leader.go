@@ -116,6 +116,10 @@ func applyEventOffSwitches(ev *model.EventUser, r *http.Request) bool {
 		ev.OffSeaWar = r.FormValue("auto_thuongminh") != "on"
 		touched = true
 	}
+	if r.FormValue("shown_auto_qiling") == "1" {
+		ev.OffQilingArea = r.FormValue("auto_qiling") != "on"
+		touched = true
+	}
 	return touched
 }
 
@@ -971,7 +975,7 @@ func (t *TeleBot) webEventAction(r *http.Request, chatID int64, leaderID string)
 		randomID := model.GenerateRandomEventUserID(db)
 		eu := &model.EventUser{
 			ID: randomID, Username: username, Password: password,
-			ServerID: sv, LeaderID: leaderID,
+			ServerID: sv, LeaderID: leaderID, OffQilingArea: true,
 		}
 		if err := model.CreateEventUser(db, eu); err != nil {
 			return "!!không tạo được acc sự kiện: " + err.Error()
@@ -1051,6 +1055,7 @@ func (t *TeleBot) webEventAction(r *http.Request, chatID int64, leaderID string)
 		}
 		if p, ok := t.eventSessionOf(*ev); ok {
 			p.OffRbt, p.OffSeaWar = ev.OffRebornTrial, ev.OffSeaWar
+			p.OffQiling.Store(ev.OffQilingArea)
 		}
 		return "Đã lưu cấu hình sự kiện cho " + ev.Username
 
@@ -1074,6 +1079,7 @@ func (t *TeleBot) webEventAction(r *http.Request, chatID int64, leaderID string)
 			}
 			if p, ok := t.eventSessionOf(ev); ok {
 				p.OffRbt, p.OffSeaWar = ev.OffRebornTrial, ev.OffSeaWar
+				p.OffQiling.Store(ev.OffQilingArea)
 			}
 			applied++
 		}
