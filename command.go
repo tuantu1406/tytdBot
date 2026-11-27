@@ -286,6 +286,15 @@ const (
 	SERVER_GOD_ISLAND_AUTO_STOP      = "1acf" // 6863 push: auto battle stopped
 )
 
+// Tứ Thánh Bảo Vực Monopoly protocol IDs are 32-bit values from the installed
+// client runtime_pch_script_index.js. pack.Unpack preserves these full IDs.
+const (
+	MONOPOLY_ROLL_DICE_CMD       = "0003406f" // 213103
+	SERVER_MONOPOLY_ROLL_DICE    = "0003406f"
+	MONOPOLY_EVENT_HANDLE_CMD    = "00034083" // 213123
+	SERVER_MONOPOLY_EVENT_HANDLE = "00034083"
+)
+
 // Holy Land (Cửu U / 九幽争霸) union-vs-union city event. Request IDs and
 // the incoming transport type of each response (type = id % 100000) come from
 // ../remoteHolyLand/HOLY_LAND_PROTOCOL.md. Unlike God Island there is NO

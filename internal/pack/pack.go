@@ -56,6 +56,12 @@ func Unpack(data []byte) (bool, string, []byte) {
 		return false, "", nil
 	}
 
+	// The client uses a 32-bit protocol id for newer modules such as
+	// Monopoly (213103/213123). Existing legacy commands fit in 16 bits and
+	// have zero high bytes, so retain their historical 4-hex-digit dispatch.
 	dataTypeHex := hex.EncodeToString(data[8:10])
+	if data[6] != 0 || data[7] != 0 {
+		dataTypeHex = hex.EncodeToString(data[6:10])
+	}
 	return true, dataTypeHex, data[18:]
 }

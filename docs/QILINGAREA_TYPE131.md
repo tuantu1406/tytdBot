@@ -2,18 +2,11 @@
 
 ## Đã có trong checkout
 
-`internal/qilingarea` đọc offline payload 21003, các bảng Activity chung và
-`MonopolyConfigSyncMsg` trong `uniqueConfig`. `qilingarea-inspect` không gửi
-request, không đọc/trả `playerData`, và giữ thêm đường dẫn wire field để đối
-chiếu. Các request builder chỉ tạo payload byte; hiện không có transport gọi
-chúng.
-
-```powershell
-go run ./cmd/qilingarea-inspect path\to\response-21003.bin
-```
-
-Input là protobuf response payload, không phải outer websocket frame. Input tối
-đa 1 MiB; chuỗi bị giới hạn và giá trị có vẻ chứa credential được redacted.
+`internal/qilingarea` có policy mua shop, payload builders và parser kết quả
+gieo xúc xắc. Lệnh Telegram `/qiling_roll <event_account_id> XAC_NHAN` nối
+builder gieo một lần với phiên game đang chạy. Builder đánh quái/lật thẻ mới
+chỉ tạo payload; chưa có handler gửi chúng. Không có `qilingarea-inspect` CLI
+trong nhánh này. Các asset/schema tham chiếu bên dưới nằm ngoài repo.
 
 ## Bằng chứng runtime và schema
 
@@ -42,7 +35,8 @@ Client asset thứ hai xác nhận ID giao thức và cặp request/response; sc
 
 `MonopolyConfigSyncMsg` cũng đã có schema: repeated `eventConfigs=1`,
 `mapConfigs=2`, `monsterConfig=3`, `timeConfig=4`, `groupConfig=5`. Parser
-offline đọc các bảng đó. Runtime UI có `topNum=3`, `downNum=12`, đếm ba loại
+trong checkout chưa giải mã các bảng này từ `uniqueConfig`. Runtime UI có
+`topNum=3`, `downNum=12`, đếm ba loại
 thẻ và gửi index ô được chọn; vì vậy bundle đang cài cho thấy 12 ô, cần đối
 chiếu nếu giao diện phiên bản hiện tại chỉ hiện 9.
 
@@ -51,9 +45,24 @@ sau khi client chuẩn hóa đường bí mật. Builder lật thẻ dùng event
 vị trí map hiện tại ở envelope và index thẻ bên trong. Việc giải nghĩa
 `param`/`drawParam`, chọn chiến lược và chuẩn hóa vị trí chưa được tự động hóa.
 
+## Thao tác game (mốc đầu)
+
+- Lệnh `/qiling_roll <event_account_id> XAC_NHAN` chỉ tác động một tài khoản
+  sự kiện thuộc quyền người gọi, cần phiên đang online và activity type 131
+  đang mở. Lệnh gửi đúng một `MonopolyRollDiceReq` qua protocol 213103; không
+  retry, không tự mua vật phẩm hồi thể lực và không bật tự chơi. Gieo có thể
+  tiêu hao thể lực; chi phí/vị trí sau thao tác lấy từ response server.
+- Builder offline cho monster action (`action=3`) và lật thẻ qua envelope
+  213123 đã có test tham số. Chúng chưa được nối thành lệnh gửi.
+- Client dùng protocol ID 32-bit; `pack.Unpack` giờ giữ đủ ID cho Monopoly,
+  trong khi các lệnh 16-bit cũ giữ nguyên cách dispatch.
+- Ảnh bàn chơi do người dùng cung cấp xác nhận giao diện map và thành phần nhìn
+  thấy. Ảnh không chứng minh trạng thái ô, `eventId`, map index, chi phí hay
+  kết quả request/response.
+
 ## Phần còn thiếu trước khi bật tự chơi
 
-- Chưa có payload 21003 activity 9064650 đã lưu để kiểm tra parser với cấu hình
+- Chưa có payload 21003 activity 9064648 đã lưu để kiểm tra parser với cấu hình
   thật: event ID, map cell, quái, luật thẻ, thời gian và các giá trị
   `QILINGAREA_*`/chi phí chưa được xác nhận từ fixture hiện hành.
 - Chưa có fixture đã ghép request/response cho từng bước chơi. Schema cho biết
@@ -63,8 +72,9 @@ vị trí map hiện tại ở envelope và index thẻ bên trong. Việc giả
 - Cơ chế “ba thẻ trùng” và lưới 9 ô hiện là lời mô tả của người chơi; runtime
   bundle đọc được là 12 ô. Chưa chọn chiến lược để tránh lật thừa hoặc tiêu
   tài nguyên.
-- Chưa có event engine/session integration, vòng lặp tự chơi hay hành động
-  claim/assist/rob. Không có lệnh gameplay nào được gửi trong lần đọc này.
+- Chưa có tự chơi, đồng bộ trạng thái map, handler đánh quái/lật thẻ, hoặc
+  claim/assist/rob. Lệnh gieo xúc xắc mới chưa được thử live; lần live gần nhất
+  chỉ login và đọc danh sách hoạt động. Không gửi thao tác gameplay live.
 
 Do đó schema và payload builders đã đủ căn cứ để tạo fixture offline chính xác,
 nhưng **chưa đủ để bật tool tự chơi an toàn**. Bước tiếp theo là nạp fixture

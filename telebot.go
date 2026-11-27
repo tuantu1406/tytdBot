@@ -610,6 +610,9 @@ func (t *TeleBot) Run() {
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/thienma_canqua", bot.MatchTypePrefix, t.ThienmaCanQuaHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/thienma_tangtoc", bot.MatchTypeExact, t.ThienmaTangTocHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/thienma_hoimau", bot.MatchTypeExact, t.ThienmaHoiMauHandler)
+	// Type 131 gameplay is manual and single-account: each roll requires an
+	// explicit XAC_NHAN and never fans out to every event account.
+	b.RegisterHandler(bot.HandlerTypeMessageText, "/qiling_roll", bot.MatchTypePrefix, t.QilingRollHandler)
 	// Cửu U (Holy Land) orders — same prefix-ordering rules: the
 	// attack_thuve prefix must win over /cuuu_attack; /cuuu_hoisinh
 	// is a prefix because it takes an optional "item" word.

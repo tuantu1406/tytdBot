@@ -128,9 +128,10 @@ type EventPlayer struct {
 	// Leader off-switches (tab Sự kiện, 2026-11-09): seeded from the
 	// EventUser row at login, patched live by webEventAction config —
 	// single bools, loop reads lock-free (same law as Player Running gates).
-	OffRbt    bool        // Luân Hồi Bí Cảnh 172
-	OffSeaWar bool        // Thương Minh Yêu Vực 349
-	OffQiling atomic.Bool // Tứ Thánh Bảo Vực 131
+	OffRbt     bool        // Luân Hồi Bí Cảnh 172
+	OffSeaWar  bool        // Thương Minh Yêu Vực 349
+	OffQiling  atomic.Bool // Tứ Thánh Bảo Vực 131
+	qlGameBusy atomic.Bool // one manual Type 131 gameplay action at a time
 
 	// "Cắn quả" web card (tab Sự kiện, owner 2026-11-09): swEatBusy guards
 	// one eat-all loop per account (presses while eating are no-ops);
@@ -785,6 +786,8 @@ func (p *EventPlayer) eventWsHandler() {
 				p.giDeliverBuyGoods(realData)
 				p.rbtHandleFrameEP(msgType, realData)
 				p.swHandleFrameEP(SERVER_ACTIVITY_BUY_GOODS, realData)
+			case SERVER_MONOPOLY_ROLL_DICE, SERVER_MONOPOLY_EVENT_HANDLE:
+				p.rbtHandleFrameEP(msgType, realData)
 				// TODO: handle further event messages here. Dispatch on msgType
 				// using the SERVER_* constants from command.go (add new ones as
 				// event protocol messages are identified); reply via
