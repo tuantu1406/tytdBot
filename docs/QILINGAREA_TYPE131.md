@@ -73,7 +73,7 @@ request/response đã được cho phép ghi nhận. Chỉ thêm transport sau k
 ret và điều kiện dừng được xác nhận; test offline tuyệt đối không tiêu thể lực
 hay nhận thưởng.
 
-## Thương mại Type 131 (mới nối, chưa live-verified)
+## Thương mại Type 131
 
 - EventUser có công tắc riêng trong tab Sự kiện, mặc định tắt. Khi bật, helper
   tải lại 21003 mỗi 15 phút, dùng giới hạn/mall count server gửi và chỉ mua
@@ -90,8 +90,12 @@ hay nhận thưởng.
 - Mốc nạp chỉ xét điều kiện type 84 có progress server hiện tại đạt ngưỡng
   `param[0]` và chưa nhận. Mỗi mốc gọi 21004 riêng theo đúng `activityId` và
   `conditionId`; chỉ `ret=0` được ghi nhận. Không tự tạo giao dịch nạp tiền.
-- Chưa gửi các request này lên tài khoản live. Cần kiểm thử trên tài khoản thử
-  để xác nhận Type 131 server chấp nhận gói miễn phí, quảng cáo, Tiên Ngọc và
-  mốc nạp; policy của shop quảng cáo được đối chiếu với `rbtMallAuto` và các
-  shop God Island trong repo, nhưng chưa xác nhận riêng trên server Type 131.
-  Đợt này chỉ kiểm tra policy/serialization ngoại tuyến.
+- Đã kiểm tra live read-only và mua trên tài khoản thử ở server `710070`,
+  activity `9064648`, type 131 (cửa sổ hoạt động hiển thị 26–29/11/2026).
+  Server trả `ret=0` cho 3 lượt gói Video Cổ Vũ, 1 Phúc Lợi Miễn Phí và 3
+  lượt Gói Tiên Ngọc (388 Tiên Ngọc/lượt). Một lần đọc 21003 sau đó xác nhận
+  các bộ đếm lần lượt là 3/3, 1/1 và 3/3. Không có request mua category tiền
+  thật hoặc request nhận mốc nạp trong lần kiểm tra này.
+- Kết quả trên xác nhận các gói 0 phí, gói theo cooldown server và gói Tiên
+  Ngọc hoạt động cho activity/server/account đó tại thời điểm thử. Không suy
+  rộng sang server khác hoặc event Type 131 khác.
